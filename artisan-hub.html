@@ -1,0 +1,213 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="theme-color" content="#06386d">
+    <link rel="manifest" href="manifest.webmanifest">
+    <link rel="icon" href="assets/icons/favicon-32.png" sizes="32x32">
+    <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
+    <title>Artisan Hub | Kaarvi</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    
+
+
+
+
+    <div class="gov-strip">
+        <div class="container gov-strip-inner"><span>Government of India</span><span>Ministry of Social Justice &amp;
+                Empowerment</span><span>Smart India Hackathon 2026 • PS 26090</span></div>
+    </div>
+    <header class="header">
+        <div class="container nav"><a class="brand" href="index.html"><img src="assets/kaarvi-logo.png"
+                    alt="Kaarvi logo"></a>
+            <nav class="navlinks"><a href="index.html">Home</a><a class="active-link" href="artisan-hub.html">Artisan
+                    Hub</a><a href="buyers-hub.html">Buyers Hub</a><a href="enhancer.html">Image Enhancer</a><a
+                    href="chatbot.html">Help</a></nav><select class="lang" data-lang aria-label="Language">
+                <option value="en">English</option>
+                <option value="hi">हिन्दी</option>
+                <option value="pa">ਪੰਜਾਬੀ</option>
+                <option value="bn">বাংলা</option>
+                <option value="mr">मराठी</option>
+                <option value="gu">ગુજરાતી</option>
+                <option value="ta">தமிழ்</option>
+                <option value="te">తెలుగు</option>
+                <option value="kn">ಕನ್ನಡ</option>
+                <option value="ml">മലയാളം</option>
+                <option value="or">ଓଡ଼ିଆ</option>
+                <option value="as">অসমীয়া</option>
+            </select>
+            <button type="button" class="cart-btn" data-open-cart aria-label="View cart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1.4"></circle><circle cx="18" cy="21" r="1.4"></circle><path d="M2.5 3h2.4l2.2 12.2a2 2 0 0 0 2 1.65h8.1a2 2 0 0 0 1.97-1.62L21 8H6.2"></path></svg><span class="cart-count" data-cart-count>0</span></button>
+        </div>
+    </header>
+    <main>
+        <section class="page-title">
+            <div class="container"><span class="eyebrow">ARTISAN DIGITAL WORKSPACE</span>
+                <h1>Prepare. Catalogue. Sell.</h1>
+                <p>Simple tools for product photos, multilingual listings and digital market access.</p>
+            </div>
+        </section>
+        <section>
+            <div class="container">
+                <div class="tools-grid">
+                    <article class="tool tool-saffron">
+                        <div class="tool-icon">01</div>
+                        <h3>Image Enhancer</h3>
+                        <p>Prepare cleaner product photos with a simple image workflow.</p><a class="btn btn-saffron"
+                            href="enhancer.html">Open Image Enhancer</a>
+                    </article>
+                    <article class="tool tool-green">
+                        <div class="tool-icon">02</div>
+                        <h3>Multilingual Cataloger</h3>
+                        <p data-catalog-hint>Edit product details and generate a professional catalogue listing in your
+                            chosen Indian language.</p>
+                        <div class="language-pills">
+                            <span>English</span><span>हिन्दी</span><span>বাংলা</span><span>தமிழ்</span><span>తెలుగు</span><span>मराठी</span>
+                        </div>
+                    </article>
+                    <article class="tool tool-blue">
+                        <div class="tool-icon">03</div>
+                        <h3>Dynamic Pricing</h3>
+                        <p>Review material cost and product information before setting a selling price.</p><button
+                            class="btn btn-primary"
+                            onclick="document.getElementById('pricingDemo').classList.toggle('show')">Try Demo</button>
+                        <div id="pricingDemo" class="mini-demo"><input type="number"
+                                placeholder="Material cost ₹"><input type="number" placeholder="Making cost ₹"><button
+                                class="btn btn-green"
+                                onclick="alert('Prototype suggestion: review your costs, market demand and product uniqueness before final pricing.')">Suggest
+                                Range</button></div>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <section class="pricing-section" id="pricingCalculator">
+            <div class="container">
+                <div class="section-head left">
+                    <span class="section-kicker">SMART PRICING ENGINE</span>
+                    <h2>Dynamic Pricing</h2>
+                    <p>Build a transparent suggested price from costs, demand, uniqueness, season and batch size.</p>
+                </div>
+                <div class="form-card pricing-card">
+                    <div class="form-row">
+                        <div class="field"><label for="materialCost">Material cost (₹)</label><input id="materialCost" type="number" min="0" value="500"></div>
+                        <div class="field"><label for="makingCost">Making cost (₹)</label><input id="makingCost" type="number" min="0" value="350"></div>
+                        <div class="field"><label for="batchQty">Batch quantity</label><input id="batchQty" type="number" min="1" value="1"></div>
+                    </div>
+                    <div class="pricing-sliders">
+                        <label>Market demand <output id="demandScoreValue">65</output>/100<input id="demandScore" type="range" min="0" max="100" value="65"></label>
+                        <label>Craft uniqueness <output id="uniquenessScoreValue">70</output>/100<input id="uniquenessScore" type="range" min="0" max="100" value="70"></label>
+                        <label>Seasonal interest <output id="seasonScoreValue">55</output>/100<input id="seasonScore" type="range" min="0" max="100" value="55"></label>
+                    </div>
+                    <button id="calculatePrice" class="btn btn-green" type="button">Calculate Suggested Price</button>
+                    <div id="priceResult" class="price-result" aria-live="polite"></div>
+                    <small class="prototype-note">Prototype pricing logic only. It does not claim to use live marketplace data.</small>
+                </div>
+            </div>
+        </section>
+
+        <section class="soft-section">
+            <div class="container">
+                <div class="section-head"><span class="section-kicker">MULTILINGUAL CATALOGER</span>
+                    <h2>Create a listing in seconds</h2>
+                    <p data-catalog-hint>Fill the simple fields and generate ready-to-use catalogue copy.</p>
+                </div>
+                <div class="cataloger-grid">
+                    <div class="form-card catalog-form">
+                        <div class="field"><label for="catalogLanguage">Catalogue language</label><select
+                                id="catalogLanguage">
+                                <option value="en">English</option>
+                                <option value="hi">हिन्दी</option>
+                                <option value="bn">বাংলা</option>
+                                <option value="ta">தமிழ்</option>
+                                <option value="te">తెలుగు</option>
+                                <option value="mr">मराठी</option>
+                            </select></div>
+                        <div class="field"><label for="catalogName">Product name</label><input id="catalogName"
+                                placeholder="e.g. Hand-painted Blue Pottery Vase"></div>
+                        <div class="form-row">
+                            <div class="field"><label for="catalogMaterial">Material / craft</label><input
+                                    id="catalogMaterial" placeholder="e.g. Ceramic, blue pottery"></div>
+                            <div class="field"><label for="catalogRegion">Region</label><input id="catalogRegion"
+                                    placeholder="e.g. Jaipur, Rajasthan"></div>
+                        </div>
+                        <div class="field"><label for="catalogFeatures">Key features</label><textarea
+                                id="catalogFeatures" placeholder="Colour, size, use, special detail..."></textarea>
+                        </div><button id="generateCatalog" class="btn btn-green" data-i18n-generate>Generate
+                            Catalogue</button>
+                    </div>
+                    <div id="catalogOutput" class="catalog-output">
+                        <div class="output-label">GENERATED LISTING</div>
+                        <h3 id="catalogOutTitle">Your product title will appear here</h3>
+                        <p id="catalogOutDesc">Your professional multilingual description will appear here.</p>
+                        <div class="seo-box"><strong>Search title</strong><span id="catalogOutSeo">Your SEO-ready
+                                title</span></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section>
+            <div class="container">
+                <div class="section-head left"><span class="section-kicker">SELL &amp; MANAGE</span>
+                    <h2>Add a product</h2>
+                    <p>Product image and listing information can be updated later.</p>
+                </div>
+                <div class="form-card">
+                    <form data-demo>
+                        <div class="form-row">
+                            <div class="field"><label>Product name</label><input required
+                                    placeholder="e.g. Hand-painted Terracotta Vase"></div>
+                            <div class="field"><label>Category</label><select>
+                                    <option>Pottery</option>
+                                    <option>Handlooms & Textiles</option>
+                                    <option>Wood Crafts</option>
+                                    <option>Metal Crafts</option>
+                                    <option>Embroidery</option>
+                                    <option>Baskets</option>
+                                </select></div>
+                        </div>
+                        <div class="form-row">
+                            <div class="field"><label>Selling price (₹)</label><input type="number" min="0"
+                                    placeholder="1200"></div>
+                            <div class="field"><label>Region</label><input placeholder="e.g. Jaipur, Rajasthan"></div>
+                        </div>
+                        <div class="upload"><strong>Product image</strong>
+                            <p>Use a clear product-only photograph. No people or workshop scenes.</p><input type="file"
+                                accept="image/*">
+                        </div><button class="btn btn-primary" type="submit">Save Product</button>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
+    <footer class="footer">
+        <div class="container footer-grid">
+            <div><img src="assets/kaarvi-logo.png" alt="Kaarvi logo" class="footer-logo">
+                <p>Craft. Connect. Grow.</p>
+            </div>
+            <div>
+                <h3>Platform</h3><a href="artisan-hub.html">Artisan Hub</a><a href="buyers-hub.html">Buyers Hub</a><a
+                    href="enhancer.html">Image Enhancer</a>
+            </div>
+            <div>
+                <h3>Information</h3><a href="index.html#why">Why Kaarvi</a><a href="index.html#faq">FAQs</a>
+            </div>
+            <div>
+                <h3>Hackathon</h3>
+                <p>Smart India Hackathon 2026</p>
+                <p>Problem Statement 26090</p>
+            </div>
+        </div>
+        <div class="container footer-note">Prototype interface • Not a live Government of India service. • Built by Kartik</div>
+    </footer>
+    <script src="products.js"></script>
+    <script src="app.js"></script>
+<script src="chat-widget.js"></script>
+</body>
+
+</html>

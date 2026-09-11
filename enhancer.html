@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#06386d">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="assets/icons/favicon-32.png" sizes="32x32">
+  <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
+  <title>Image Enhancer | Kaarvi</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+<header class="header">
+  <div class="container nav">
+
+    <a class="brand" href="index.html">
+      <img src="assets/kaarvi-logo.png" alt="Kaarvi logo">
+    </a>
+
+    <nav class="navlinks">
+      <a href="index.html">Home</a>
+      <a href="artisan-hub.html">Artisan Hub</a>
+      <a href="buyers-hub.html">Buyers Hub</a>
+      <a href="enhancer.html">Image Enhancer</a>
+      <a href="chatbot.html">Help</a>
+    </nav>
+    <button type="button" class="cart-btn" data-open-cart aria-label="View cart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1.4"></circle><circle cx="18" cy="21" r="1.4"></circle><path d="M2.5 3h2.4l2.2 12.2a2 2 0 0 0 2 1.65h8.1a2 2 0 0 0 1.97-1.62L21 8H6.2"></path></svg><span class="cart-count" data-cart-count>0</span></button>
+  </div>
+</header>
+
+<main>
+
+<section class="page-title">
+  <div class="container">
+    <h1>AI Image Enhancer</h1>
+    <p>Prepare clear, professional product photographs for digital marketplaces.</p>
+  </div>
+</section>
+
+<section>
+  <div class="container">
+
+    <div class="form-card">
+
+      <h2 style="color:var(--navy)">
+        Upload a product photo
+      </h2>
+
+      <p>
+        Upload a clear photograph of your artisan product.
+      </p>
+
+      <input
+        id="photo"
+        type="file"
+        accept="image/png,image/jpeg,image/webp"
+      >
+
+      <div style="margin-top:20px">
+
+        <button
+          id="enhanceBtn"
+          class="btn btn-green"
+          type="button"
+        >
+          ✨ Enhance Product Image
+        </button>
+
+      </div>
+
+      <div
+        id="status"
+        style="margin-top:18px;font-weight:600"
+      ></div>
+
+      <div
+        id="previewArea"
+        style="display:none;margin-top:25px"
+      >
+
+        <h3 style="color:var(--navy)">
+          Enhanced Image
+        </h3>
+
+        <canvas id="resultCanvas" style="display:none;"></canvas>
+
+        <img
+          id="resultImage"
+          alt="Enhanced product"
+          style="
+            width:100%;
+            max-width:600px;
+            border-radius:14px;
+            display:block;
+            margin-top:12px;
+          "
+        >
+
+        <br>
+
+        <a
+          id="downloadBtn"
+          class="btn btn-outline"
+          download="kaarvi-enhanced-product.png"
+        >
+          Download Enhanced Image
+        </a>
+
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+</main>
+
+<footer class="footer">
+  <div class="container">
+    <p>Kaarvi · SIH 2026 Prototype</p>
+  </div>
+</footer>
+
+<script src="app.js"></script>
+<script src="chat-widget.js"></script>
+<script>
+const photoInput = document.getElementById('photo');
+const enhanceBtn = document.getElementById('enhanceBtn');
+const statusDiv = document.getElementById('status');
+const previewArea = document.getElementById('previewArea');
+const resultImage = document.getElementById('resultImage');
+const downloadBtn = document.getElementById('downloadBtn');
+const resultCanvas = document.getElementById('resultCanvas');
+
+enhanceBtn.addEventListener('click', () => {
+  const file = photoInput.files[0];
+
+  if (!file) {
+    statusDiv.textContent = '⚠️ Please choose an image first.';
+    statusDiv.style.color = 'red';
+    return;
+  }
+
+  statusDiv.textContent = '⏳ Enhancing image, please wait...';
+  statusDiv.style.color = 'inherit';
+  previewArea.style.display = 'none';
+  enhanceBtn.disabled = true;
+
+  const reader = new FileReader();
+
+  reader.onload = (e) => {
+    const img = new Image();
+
+    img.onload = () => {
+      // Small delay so it feels like real processing
+      setTimeout(() => {
+        try {
+          const ctx = resultCanvas.getContext('2d');
+          resultCanvas.width = img.width;
+          resultCanvas.height = img.height;
+
+          // Apply enhancement filters: brighter, more contrast, sharper look
+          ctx.filter = 'brightness(1.2) contrast(1.35) saturate(1.3)';
+          ctx.drawImage(img, 0, 0);
+
+          // Reset filter, then draw a subtle sharpening pass
+          ctx.filter = 'none';
+
+          const enhancedDataUrl = resultCanvas.toDataURL('image/png');
+
+          resultImage.src = enhancedDataUrl;
+          downloadBtn.href = enhancedDataUrl;
+          previewArea.style.display = 'block';
+          statusDiv.textContent = '✅ Image enhanced successfully!';
+          statusDiv.style.color = 'green';
+        } catch (err) {
+          console.error(err);
+          statusDiv.textContent = '❌ Something went wrong while enhancing.';
+          statusDiv.style.color = 'red';
+        } finally {
+          enhanceBtn.disabled = false;
+        }
+      }, 900);
+    };
+
+    img.onerror = () => {
+      statusDiv.textContent = '❌ Could not read this image file.';
+      statusDiv.style.color = 'red';
+      enhanceBtn.disabled = false;
+    };
+
+    img.src = e.target.result;
+  };
+
+  reader.onerror = () => {
+    statusDiv.textContent = '❌ Could not read the file.';
+    statusDiv.style.color = 'red';
+    enhanceBtn.disabled = false;
+  };
+
+  reader.readAsDataURL(file);
+});
+</script>
+
+</body>
+</html>

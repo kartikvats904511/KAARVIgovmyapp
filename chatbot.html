@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#06386d">
+  <link rel="manifest" href="manifest.webmanifest">
+    <link rel="icon" href="assets/icons/favicon-32.png" sizes="32x32">
+    <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
+  <title>Kaarvi Assistant | Help</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="gov-strip"><div class="container gov-strip-inner"><span>Government of India</span><span>Ministry of Social Justice &amp; Empowerment</span><span>Smart India Hackathon 2026 • PS 26090</span></div></div>
+  <header class="header"><div class="container nav">
+    <a class="brand" href="index.html"><img src="assets/kaarvi-logo.png" alt="Kaarvi logo"></a>
+    <nav class="navlinks"><a href="index.html">Home</a><a href="artisan-hub.html">Artisan Hub</a><a href="buyers-hub.html">Buyers Hub</a><a href="enhancer.html">Image Enhancer</a><a class="active-link" href="chatbot.html">Help</a></nav>
+    <select class="lang" data-lang aria-label="Language"><option value="en">English</option><option value="hi">हिन्दी</option><option value="bn">বাংলা</option><option value="ta">தமிழ்</option><option value="te">తెలుగు</option><option value="mr">मराठी</option></select>
+    <button type="button" class="cart-btn" data-open-cart aria-label="View cart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1.4"></circle><circle cx="18" cy="21" r="1.4"></circle><path d="M2.5 3h2.4l2.2 12.2a2 2 0 0 0 2 1.65h8.1a2 2 0 0 0 1.97-1.62L21 8H6.2"></path></svg><span class="cart-count" data-cart-count>0</span></button>
+  </div></header>
+
+  <main>
+    <section class="page-title"><div class="container"><span class="eyebrow">KAARVI HELP</span><h1>Kaarvi Assistant</h1><p>Ask about artisans, buyers, catalogue, pricing, orders or the platform.</p></div></section>
+    <section><div class="container">
+      <div class="form-card chatbot-card">
+        <div class="chat-toolbar">
+          <div><strong>AI + Voice Assistant</strong><small id="chatStatus">Checking assistant…</small></div>
+          <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+            <button type="button" id="speakToggle" class="speak-toggle" aria-pressed="false">🔊 Voice replies: Off</button>
+            <select id="chatLang" class="lang" aria-label="Chat language">
+              <option value="English">English</option><option value="Hindi">हिन्दी</option><option value="Bengali">বাংলা</option><option value="Tamil">தமிழ்</option><option value="Telugu">తెలుగు</option><option value="Marathi">मराठी</option>
+            </select>
+          </div>
+        </div>
+        <div class="quick-prompts">
+          <button type="button" data-prompt="How does dynamic pricing work?">Dynamic pricing</button>
+          <button type="button" data-prompt="How do I create a product listing?">Create listing</button>
+          <button type="button" data-prompt="How do I place an order?">Place an order</button>
+          <button type="button" data-prompt="Which languages are supported?">Languages</button>
+        </div>
+        <div id="messages" class="chat-messages" aria-live="polite"></div>
+        <form id="chatForm" class="chat-form">
+          <button type="button" id="micBtn" class="voice-btn" title="Speak your question" aria-label="Speak your question">🎤</button>
+          <input id="msg" maxlength="2000" placeholder="Ask something about Kaarvi…" autocomplete="off" required>
+          <button type="submit" class="btn btn-green">Send</button>
+        </form>
+        <p class="voice-hint" id="voiceHint"></p>
+        <p class="prototype-note">For full AI answers on Render, add <code>GEMINI_API_KEY</code> as an Environment Variable. Without it, Kaarvi automatically uses its built-in multilingual demo assistant.</p>
+      </div>
+    </div></section>
+  </main>
+  <footer class="footer"><div class="container footer-note">Kaarvi • SIH 2026 prototype • Not a live Government of India service. • Built by Kartik</div></footer>
+
+<script>
+const messages=document.getElementById("messages");
+const input=document.getElementById("msg");
+const lang=document.getElementById("chatLang");
+const statusEl=document.getElementById("chatStatus");
+const micBtn=document.getElementById("micBtn");
+const speakToggle=document.getElementById("speakToggle");
+const voiceHint=document.getElementById("voiceHint");
+
+function bubble(text,who="bot"){const d=document.createElement("div");d.className="bubble "+who;d.textContent=text;messages.appendChild(d);messages.scrollTop=messages.scrollHeight;return d;}
+function typingBubble(){const d=document.createElement("div");d.className="bubble bot";d.innerHTML='<span class="chat-typing"><span></span><span></span><span></span></span>';messages.appendChild(d);messages.scrollTop=messages.scrollHeight;return d;}
+bubble("Hello! I’m Kaarvi Assistant. Ask me about artisans, buyers, pricing, languages or orders. You can also tap the mic to speak.");
+
+async function checkHealth(){
+  try{const r=await fetch("/api/health");const d=await r.json();statusEl.textContent=d.chatbotConfigured?"Gemini AI connected":"Demo assistant active • add Gemini key for AI";}catch{statusEl.textContent="Demo assistant active";}}
+checkHealth();
+
+/* ---------- Voice replies (text-to-speech) ---------- */
+const BCP47={English:"en-IN",Hindi:"hi-IN",Bengali:"bn-IN",Tamil:"ta-IN",Telugu:"te-IN",Marathi:"mr-IN"};
+let speakEnabled=localStorage.getItem("kaarvi_voice_out")==="1";
+const synthSupported="speechSynthesis" in window;
+
+function refreshSpeakToggle(){
+  speakToggle.setAttribute("aria-pressed",String(speakEnabled));
+  speakToggle.textContent=(speakEnabled?"🔊 Voice replies: On":"🔈 Voice replies: Off");
+}
+refreshSpeakToggle();
+
+if(!synthSupported){
+  speakToggle.disabled=true;
+  speakToggle.textContent="🔈 Voice replies unavailable";
+}
+
+speakToggle.addEventListener("click",()=>{
+  if(!synthSupported)return;
+  speakEnabled=!speakEnabled;
+  localStorage.setItem("kaarvi_voice_out",speakEnabled?"1":"0");
+  refreshSpeakToggle();
+  if(!speakEnabled) window.speechSynthesis.cancel();
+});
+
+function speak(text){
+  if(!synthSupported || !speakEnabled || !text)return;
+  window.speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(text);
+  u.lang=BCP47[lang.value]||"en-IN";
+  const voices=window.speechSynthesis.getVoices();
+  const match=voices.find(v=>v.lang===u.lang) || voices.find(v=>v.lang && v.lang.startsWith(u.lang.slice(0,2)));
+  if(match) u.voice=match;
+  window.speechSynthesis.speak(u);
+}
+
+/* ---------- Voice input (speech-to-text) ---------- */
+const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+let recognition=null, listening=false;
+
+if(SR){
+  recognition=new SR();
+  recognition.continuous=false;
+  recognition.interimResults=false;
+  recognition.maxAlternatives=1;
+
+  recognition.onstart=()=>{listening=true;micBtn.classList.add("listening");micBtn.textContent="●";voiceHint.textContent="Listening… speak now.";};
+  recognition.onend=()=>{listening=false;micBtn.classList.remove("listening");micBtn.textContent="🎤";voiceHint.textContent="";};
+  recognition.onerror=(e)=>{listening=false;micBtn.classList.remove("listening");micBtn.textContent="🎤";
+    voiceHint.textContent=e.error==="not-allowed"?"Microphone access was blocked. Allow it in your browser to use voice input.":"Could not hear you clearly. Please try again.";
+  };
+  recognition.onresult=(e)=>{
+    const transcript=e.results[0][0].transcript;
+    input.value=transcript;
+    sendMessage(transcript);
+  };
+
+  micBtn.addEventListener("click",()=>{
+    if(listening){recognition.stop();return;}
+    recognition.lang=BCP47[lang.value]||"en-IN";
+    try{recognition.start();}catch(_){/* already starting */}
+  });
+}else{
+  micBtn.disabled=true;
+  micBtn.title="Voice input isn't supported in this browser";
+  micBtn.style.opacity=".45";
+}
+
+async function sendMessage(text){
+  text=(text||"").trim(); if(!text)return;
+  bubble(text,"user"); input.value="";
+  const typing=typingBubble();
+  try{
+    const r=await fetch("/api/chat",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({message:text,language:lang.value})});
+    const d=await r.json();
+    if(!r.ok) throw new Error(d.error||"Request failed");
+    const reply=d.reply||"Sorry, I couldn't answer that.";
+    typing.textContent=reply;
+    speak(reply);
+  }catch(e){
+    const fallback="Sorry, the assistant could not be reached. Please check your connection and try again.";
+    typing.textContent=fallback;
+  }
+  messages.scrollTop=messages.scrollHeight;
+}
+document.getElementById("chatForm").addEventListener("submit",e=>{e.preventDefault();sendMessage(input.value);});
+document.querySelectorAll("[data-prompt]").forEach(b=>b.addEventListener("click",()=>{input.value=b.dataset.prompt;sendMessage(input.value);}));
+lang.addEventListener("change",()=>{localStorage.setItem("kaarvi_chat_lang",lang.value);});
+const saved=localStorage.getItem("kaarvi_chat_lang");if(saved)lang.value=saved;
+</script>
+<script src="app.js"></script>
+</body>
+</html>

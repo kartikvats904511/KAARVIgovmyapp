@@ -1,0 +1,23 @@
+{
+  "name": "kaarvi-sih-2026",
+  "version": "2.0.0",
+  "private": true,
+  "description": "Kaarvi - SIH 2026 artisan market linkage and smart cataloguing prototype",
+  "license": "ISC",
+  "author": "",
+  "type": "commonjs",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "check": "node --check server.js && node --check server-app.js && node --check app.js"
+  },
+  "dependencies": {
+    "@google/genai": "^2.21.0",
+    "dotenv": "^16.6.1",
+    "express": "^4.22.2",
+    "mongodb": "^6.21.0"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

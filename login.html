@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#06386d"><link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="assets/icons/favicon-32.png" sizes="32x32"><link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<meta name="description" content="Kaarvi — login and tell us whether you're an Artisan or a Buyer to get started.">
+<title>Login | Kaarvi</title><link rel="stylesheet" href="styles.css">
+</head><body>
+<div class="gov-strip"><div class="container gov-strip-inner"><span>Government of India</span><span>Ministry of Social Justice &amp; Empowerment</span><span>Smart India Hackathon 2026 • PS 26090</span></div></div>
+
+<div class="role-screen">
+  <div class="role-wrap" id="roleWrap">
+    <img class="role-logo" src="assets/kaarvi-logo.png" alt="Kaarvi logo">
+    <span class="role-eyebrow" id="roleEyebrow">SMART INDIA HACKATHON 2026 · KAARVI LOGIN</span>
+    <div class="role-tricolor"><i></i><i></i><i></i></div>
+    <h1 id="roleHeading">Login to Kaarvi</h1>
+    <p class="role-sub" id="roleSub">Sign in and tell us who you are — we'll take you straight to the right place, every time you open the app.</p>
+
+    <form id="loginForm" class="role-form" novalidate>
+      <div class="role-field"><label for="name">Name</label><input id="name" required placeholder="Your name" autocomplete="name"></div>
+      <div class="role-field"><label for="email">Email</label><input id="email" type="email" required placeholder="you@example.com" autocomplete="email"></div>
+      <div class="role-field"><label for="password">Password</label><input id="password" type="password" minlength="4" required placeholder="Minimum 4 characters" autocomplete="current-password"></div>
+
+      <p class="role-form-label">Are you a Buyer or an Artisan?</p>
+      <div class="role-cards role-cards-compact" id="roleCards">
+        <button type="button" class="role-card artisan" data-role="artisan" aria-pressed="false">
+          <span class="role-icon" aria-hidden="true">🧵</span>
+          <h3>I'm an Artisan</h3>
+          <p>I make crafts and want to list products, prepare images and reach buyers.</p>
+          <span class="role-go">Select Artisan</span>
+        </button>
+        <button type="button" class="role-card buyer" data-role="buyer" aria-pressed="false">
+          <span class="role-icon" aria-hidden="true">🛍️</span>
+          <h3>I'm a Buyer</h3>
+          <p>I want to browse and shop authentic Indian craft products.</p>
+          <span class="role-go">Select Buyer</span>
+        </button>
+      </div>
+      <p class="role-error" id="roleError" hidden>Please choose whether you're a Buyer or an Artisan to continue.</p>
+
+      <button class="btn btn-saffron role-submit" type="submit" id="continueBtn">Login &amp; Continue →</button>
+    </form>
+
+    <div id="accountBox" class="role-loading" hidden>
+      <div class="role-spinner"></div>
+      <p class="role-sub" style="margin:0" id="accountText"></p>
+    </div>
+
+    <p class="role-skip">Just exploring? <a id="skipLink" href="index.html">Continue to the homepage</a></p>
+    <p class="prototype-note prototype-note-dark">This is a hackathon prototype login. With MongoDB configured, account details are stored securely on the server. Without MongoDB, the demo falls back to browser-only mode.</p>
+  </div>
+  <div class="role-foot">Kaarvi • SIH 2026 prototype • Ministry of Social Justice &amp; Empowerment • Built by Kartik</div>
+</div>
+
+<script>
+(function () {
+  var form = document.getElementById("loginForm");
+  var nameEl = document.getElementById("name"), emailEl = document.getElementById("email"), passEl = document.getElementById("password");
+  var roleCards = document.getElementById("roleCards");
+  var roleError = document.getElementById("roleError");
+  var accountBox = document.getElementById("accountBox");
+  var accountText = document.getElementById("accountText");
+  var roleWrap = document.getElementById("roleWrap");
+  var params = new URLSearchParams(location.search);
+  var forceSwitch = params.get("switch") === "1" || params.get("reset") === "1";
+  var selectedRole = null;
+
+  function getUser() { try { return JSON.parse(localStorage.getItem("kaarvi_user") || "null"); } catch (e) { return null; } }
+  function getRole() { try { return localStorage.getItem("kaarvi_role"); } catch (e) { return null; } }
+  function destinationFor(role) { return role === "artisan" ? "artisan-hub.html" : role === "buyer" ? "buyers-hub.html" : "index.html"; }
+  function labelFor(role) { return role === "artisan" ? "your Artisan Hub" : role === "buyer" ? "your Buyer Hub" : "Kaarvi"; }
+
+  function goTo(role) {
+    try { localStorage.setItem("kaarvi_role", role); } catch (e) {}
+    window.location.replace(destinationFor(role));
+  }
+
+  function showReturning(user, role) {
+    form.hidden = true;
+    accountBox.hidden = false;
+    accountText.textContent = "Welcome back, " + user.name + "! Taking you to " + labelFor(role) + "…";
+    setTimeout(function () { window.location.replace(destinationFor(role)); }, 450);
+  }
+
+  // Returning user with an account AND a role already chosen: skip straight there,
+  // unless they explicitly asked to switch (?switch=1 / ?reset=1).
+  var existingUser = getUser(), existingRole = getRole();
+  if (existingUser && existingRole && existingRole !== "guest" && !forceSwitch) {
+    showReturning(existingUser, existingRole);
+  } else {
+    if (existingUser) { nameEl.value = existingUser.name || ""; emailEl.value = existingUser.email || ""; }
+    if (forceSwitch) {
+      document.getElementById("roleHeading").textContent = "Switch your Kaarvi role";
+      document.getElementById("roleSub").textContent = "You can change this anytime — pick who you are today.";
+    }
+  }
+
+  roleCards.addEventListener("click", function (e) {
+    var card = e.target.closest("[data-role]");
+    if (!card) return;
+    selectedRole = card.getAttribute("data-role");
+    Array.prototype.forEach.call(roleCards.querySelectorAll("[data-role]"), function (c) {
+      var on = c === card;
+      c.classList.toggle("selected", on);
+      c.setAttribute("aria-pressed", on ? "true" : "false");
+    });
+    roleError.hidden = true;
+  });
+
+  form.addEventListener("submit", async function (e) {
+    e.preventDefault();
+    if (!selectedRole) { roleError.hidden = false; roleError.scrollIntoView({ behavior: "smooth", block: "center" }); return; }
+    if (!form.reportValidity()) return;
+    var button = document.getElementById("continueBtn");
+    button.disabled = true;
+    button.textContent = "Connecting…";
+    try {
+      var response = await fetch("/api/auth/login", {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: nameEl.value.trim(), email: emailEl.value.trim(), password: passEl.value, role: selectedRole })
+      });
+      var data = await response.json().catch(function(){ return {}; });
+      if (response.ok && data.user) {
+        localStorage.setItem("kaarvi_user", JSON.stringify(data.user));
+        localStorage.setItem("kaarvi_auth_mode", data.mode || "mongodb");
+        goTo(selectedRole);
+        return;
+      }
+      // Keep the prototype usable locally when Atlas is not configured.
+      if (response.status === 503) {
+        localStorage.setItem("kaarvi_user", JSON.stringify({ name: nameEl.value.trim(), email: emailEl.value.trim(), role: selectedRole }));
+        localStorage.setItem("kaarvi_auth_mode", "demo");
+        goTo(selectedRole);
+        return;
+      }
+      throw new Error(data.error || "Login failed.");
+    } catch (err) {
+      alert(err.message || "Could not connect to the server.");
+      button.disabled = false;
+      button.textContent = "Login & Continue →";
+    }
+  });
+
+  document.getElementById("skipLink").addEventListener("click", function (e) {
+    e.preventDefault();
+    try { localStorage.setItem("kaarvi_role", "guest"); } catch (err) {}
+    window.location.replace("index.html");
+  });
+})();
+</script>
+<script src="app.js"></script><script src="chat-widget.js"></script>
+</body></html>

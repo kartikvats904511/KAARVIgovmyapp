@@ -1,0 +1,19 @@
+KAARVI IMAGE SOURCES
+
+Product images in the demo catalog are loaded from Wikimedia Commons via Special:FilePath.
+Please keep the source/license attribution below when redistributing the project.
+
+01 Jaipur Blue Pottery Vase — Neek-Theri — CC BY-SA 4.0
+02 Jaipur Blue Pottery Small Vase — Neek-Theri — CC BY-SA 4.0
+03 Gond art peacock — Aaronwarnerella — CC BY 4.0
+04 Bamboo basket — Harshita Kirar — CC BY-SA 4.0
+05 Dokra from Bastar — Sumita Roy Dutta — CC BY-SA 4.0
+06 Paila brass utensil — Amrit Sufi — CC BY 4.0
+07 Jamdani Saree shop — Fahad Faisal — CC BY-SA 4.0
+08 19th Century Chamba Rumal — Wikimedia Commons — license as listed on source page
+09 Ahir Embroidery From Kutch — Wikimedia Commons — license as listed on source page
+10 Brass Paraat (Himachal Pradesh) — Wikimedia Commons — license as listed on source page
+11 Sindoor box — Savithri Singh — CC BY-SA 4.0
+12 Phulkari shawl — Hiart — CC0 1.0
+13 Lota brass — Ashish Bhatnagar — Public Domain
+14 Bidriware vases — Randhirreddy — CC BY-SA 3.0
